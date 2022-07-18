@@ -135,11 +135,28 @@ jobs:
               npm install
               npm audit fix --audit-level=critical --force
               npm audit --audit-level=critical
-        - slack/notify:
-            channel: election-campaign
-            event: fail
-            template: basic_fail_1
 
+  notify:
+    docker:
+      - image: 'cimg/base:stable'
+    steps:
+      - slack/notify:
+          custom: |
+            {
+              "blocks": [
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "plain_text",
+                      "text": "*This is a text notification*",
+                      "emoji": true
+                    }
+                  ]
+                }
+              ]
+            }
+          event: always
 
 #   deploy-infrastructure:
 #     docker:
@@ -318,7 +335,6 @@ workflows:
           requires: [build-backend]
       - scan-backend_and_notify:
           requires: [build-backend]
-          context: slack-secrets
       - scan-frontend:
           requires: [build-frontend]
       - notify:
