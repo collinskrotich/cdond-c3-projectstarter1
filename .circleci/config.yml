@@ -197,7 +197,7 @@ jobs:
             echo "http://$BACKEND_AWS_PUBLIC_IP:3030" >> ~/output.txt
             echo "[all]" >> .circleci/ansible/inventory.txt
             echo "$BACKEND_AWS_PUBLIC_IP" >> .circleci/ansible/inventory.txt
-          #cat .circleci/outputs/backend_url.txt
+         
       - persist_to_workspace:
           root: ~/
           paths:
