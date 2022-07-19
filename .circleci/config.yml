@@ -17,7 +17,7 @@ commands:
           command: |
             echo "Destroying environment: <<parameters.workflow_id>> "
             aws cloudformation delete-stack --stack-name udapeople-backend-prod<<parameters.workflow_id>>
-            aws s3 rm s3://udapeople-prod<<parameters.workflow_id>> --recursive
+            aws s3 rm s3://udapeople-wajackoyah23<<parameters.workflow_id>> --recursive
             aws cloudformation delete-stack --stack-name udapeople-frontend-prod<<parameters.workflow_id>>
 
   revert-migrations:
@@ -184,14 +184,15 @@ jobs:
             aws cloudformation deploy \
               --template-file .circleci/files/frontend.yml \
               --tags project=udapeoplefrontend-ronz \
-              --stack-name udapeople-frontend-prod${CIRCLE_WORKFLOW_ID} \
+              --stack-name 
+              udapeople-frontend-prod${CIRCLE_WORKFLOW_ID} \
               --parameter-overrides ID="prod-${CIRCLE_WORKFLOW_ID}"  
 
       - run:
           name: Add back-end ip to ansible inventory
           command: |
             BACKEND_AWS_PUBLIC_IP=$(aws ec2 describe-instances \
-              --filters "Name=tag:Name,Values=backend-prod${CIRCLE_WORKFLOW_ID:0:7}" \
+              --filters "Name=tag:Name,Values=backend-prod${CIRCLE_WORKFLOW_ID}" \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
               --output text)
             echo "http://$BACKEND_AWS_PUBLIC_IP:3030" >> ~/output.txt
@@ -205,8 +206,8 @@ jobs:
             - output.txt
 
       # Here's where you will add some code to rollback on failure  
-      - destroy-environment:
-          workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"    
+      # - destroy-environment:
+      #     workflow_id: "${CIRCLE_WORKFLOW_ID}"    
 
 #   configure-infrastructure:
 #     docker:
