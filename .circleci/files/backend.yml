@@ -7,7 +7,7 @@ Parameters:
     Type: String
 
 Resources:
-  InstanceSecurityGroup:
+  InstanceSecurityGroup1:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupName: !Sub UdaPeople-${ID}
@@ -28,7 +28,7 @@ Resources:
       InstanceType: t2.micro
       ImageId: ami-0cff7528ff583bf9a
       SecurityGroups:
-      - Ref: InstanceSecurityGroup
+      - Ref: InstanceSecurityGroup1
       KeyName: udacity 
       #SubnetId: subnet-0c60751cc3ec6572f
       
