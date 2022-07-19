@@ -30,7 +30,7 @@ Resources:
       SecurityGroups:
       - Ref: InstanceSecurityGroup
       KeyName: udacity 
-      SubnetId: subnet-0c60751cc3ec6572f
+      #SubnetId: subnet-0c60751cc3ec6572f
       
       Tags:
         - Key: Name
