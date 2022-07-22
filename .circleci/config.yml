@@ -5,6 +5,15 @@ orbs:
 
 
 commands:
+    install-ansible:
+        steps:
+        - run:
+            name: "Install Ansible"
+            command: |
+              sudo apt-get update 
+              sudo apt-get install -y ansible
+
+
   # destroy-environment:
   #   description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
   #   parameters:
@@ -213,24 +222,40 @@ jobs:
       # - destroy-environment:
       #     workflow_id: "${CIRCLE_WORKFLOW_ID}"    
 
-#   configure-infrastructure:
-#     docker:
-#       # Docker image here that supports Ansible
-#     steps:
-#       # Checkout code from git
-#       # Add ssh keys with fingerprint
-#       # attach workspace
-#       - run:
-#           name: Install dependencies
-#           command: |
-#             # Your code here
-#             exit 1
-#       - run:
-#           name: Configure server
-#           command: |
-#             # Your code here
-#             exit 1
-#       # Here's where you will add some code to rollback on failure      
+  configure-infrastructure:
+    docker:
+      # Docker image here that supports Ansible
+     - image: cimg/base:stable 
+    steps:
+      # Checkout code from git
+      - checkout
+      # Add ssh keys with fingerprint
+      - add_ssh_keys:
+          fingerprints:
+            - "c1:a8:b1:8b:50:da:7c:52:52:36:c4:59:40:53:e7:fb"
+      # attach workspace
+      - attach_workspace:
+          at: ~/
+      
+      # Install ansible
+      - install-ansible
+
+      - run:
+          name: Install dependencies
+          command: |
+             yum -y install tar gzip
+             apk add curl
+             apk add --upgrade bash
+             apk add --update ansible
+             apk add openssh-client
+             pip3 install awscli
+      - run:
+          name: Configure server
+          command: |
+             cat .circleci/ansible/inventory.txt
+             export ANSIBLE_HOST_KEY_CHECKING=False
+             ansible-playbook -i .circleci/ansible/inventory.txt .circleci/ansible/configure-server.yml
+      # Here's where you will add some code to rollback on failure      
 
 #   run-migrations:
 #     docker:
