@@ -325,6 +325,7 @@ jobs:
             apk add --update ansible rsync 
             apk add curl
             pip3 install awscli
+            npm install
 
       - run:
           name: Get backend url
@@ -349,7 +350,7 @@ jobs:
           name: Deploy frontend objects
           command: |
              cd frontend
-             npm i
+             npm install
              npm run build
              ls -l
              aws s3 cp ./dist "s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7}" --recursive
@@ -382,6 +383,7 @@ jobs:
             apk add --update ansible rsync 
             apk add curl
             pip3 install awscli
+            npm install
 
       # - run:
       #     name: Install tar gzip
@@ -394,7 +396,7 @@ jobs:
           name: Deploy backend
           command: |
             cd backend
-            npm i
+            npm install
             npm run build
             cd ..
 
