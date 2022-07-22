@@ -339,9 +339,15 @@ jobs:
             cat frontend/.env
 
       - run:
+          name: Install tar gzip
+          command: |
+            sudo apt update -y
+            sudo apt install -y yum-utils
+            yum -y install tar gzip
+
+      - run:
           name: Deploy frontend objects
           command: |
-             yum -y install tar gzip
              cd frontend
              npm i
              npm run build
@@ -378,9 +384,15 @@ jobs:
             pip3 install awscli
 
       - run:
+          name: Install tar gzip
+          command: |
+            sudo apt update -y
+            sudo apt install -y yum-utils
+            yum -y install tar gzip
+
+      - run:
           name: Deploy backend
           command: |
-            yum -y install tar gzip
             cd backend
             npm i
             npm run build
