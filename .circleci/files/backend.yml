@@ -7,7 +7,16 @@ Parameters:
     Type: String
 
 Resources:
-  InstanceSecurityGroup1:
+  EC2Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: t2.micro
+      ImageId: ami-0cff7528ff583bf9a
+      SecurityGroups:
+      - Ref: InstanceSecurityGroup
+      KeyName: udacity 
+      
+  InstanceSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupName: !Sub UdaPeople-${ID}
@@ -22,16 +31,6 @@ Resources:
           ToPort: 3030
           CidrIp: 0.0.0.0/0
 
-  EC2Instance:
-    Type: AWS::EC2::Instance
-    Properties:
-      InstanceType: t2.micro
-      ImageId: ami-0cff7528ff583bf9a
-      SecurityGroups:
-      - Ref: InstanceSecurityGroup1
-      KeyName: udacity 
-      #SubnetId: subnet-0c60751cc3ec6572f
-      
       Tags:
         - Key: Name
           Value: !Sub backend-${ID}
