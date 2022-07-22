@@ -11,6 +11,7 @@ commands:
       - run:
           name: "install aws cli"
           command: |
+            sudo apt install python3-pip
             pip3 install awscli 
           
           
@@ -318,9 +319,12 @@ jobs:
       - attach_workspace:
           at: ~/
 
-      - install-ansible
-      - install-nodejs
-      - install-awscli
+      - run:
+          name: Install dependencies
+          command: |
+            apk add --update ansible rsync 
+            apk add curl
+            pip3 install awscli
 
       - run:
           name: Get backend url
@@ -366,9 +370,12 @@ jobs:
           at: ~/
 
 #Installing dependiencies
-      - install-ansible
-      - install-nodejs
-      - install-awscli
+      - run:
+          name: Install dependencies
+          command: |
+            apk add --update ansible rsync 
+            apk add curl
+            pip3 install awscli
 
       - run:
           name: Deploy backend
