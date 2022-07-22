@@ -5,7 +5,7 @@ orbs:
 
 
 commands:
-    install-ansible:
+  install-ansible:
         steps:
         - run:
             name: "Install Ansible"
