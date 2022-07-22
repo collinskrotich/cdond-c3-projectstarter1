@@ -5,7 +5,7 @@ orbs:
 
 
 commands:
-  install_aws_cli:
+  install-awscli:
     description: "install aws cli"
     steps:
       - run:
@@ -15,7 +15,7 @@ commands:
             unzip awscli-bundle.zip
             sudo ./aws/install
 
-  install_node_js:
+  install-nodejs:
     description: "install nodejs"
     steps:
       - run:
