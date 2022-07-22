@@ -318,7 +318,7 @@ jobs:
             - "c1:a8:b1:8b:50:da:7c:52:52:36:c4:59:40:53:e7:fb"
       - attach_workspace:
           at: ~/
-
+      - install-nodejs
       - run:
           name: Install dependencies
           command: |
@@ -375,7 +375,8 @@ jobs:
             - "c1:a8:b1:8b:50:da:7c:52:52:36:c4:59:40:53:e7:fb"
       - attach_workspace:
           at: ~/
-
+      - install-nodejs
+      
 #Installing dependiencies
       - run:
           name: Install dependencies
