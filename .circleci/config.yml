@@ -308,7 +308,7 @@ jobs:
   deploy-frontend:
     docker:
       # Docker image here that supports AWS CLI
-      - image: amazon/aws-cli
+      - image: python:3.7-alpine3.11
     steps:
       # Checkout code from git
       - checkout
@@ -337,6 +337,7 @@ jobs:
       - run:
           name: Deploy frontend objects
           command: |
+             yum -y install tar gzip
              cd frontend
              npm i
              npm run build
@@ -352,7 +353,7 @@ jobs:
   deploy-backend:
     docker:
       # Docker image here that supports Ansible
-      - image: cimg/base:stable
+      - image: python:3.7-alpine3.11
     steps:
       # Checkout code from git
       # Add ssh keys with fingerprint
@@ -372,13 +373,14 @@ jobs:
       - run:
           name: Deploy backend
           command: |
+            yum -y install tar gzip
             cd backend
             npm i
             npm run build
             cd ..
 
             # Zip the directory
-            # tar -C backend -czvf artifact.tar.gz .
+            tar -C backend -czvf artifact.tar.gz .
             cd .circleci/ansible
 
             echo "Contents  of the inventory.txt file is -------"
