@@ -5,20 +5,20 @@ orbs:
 
 
 commands:
-  # destroy-environment:
-  #   description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
-  #   parameters:
-  #     workflow_id:
-  #       type: string
-  #   steps:
-  #     - run:
-  #         name: Destroy environments
-  #         when: on_fail
-  #         command: |
-  #           echo "Destroying environment: <<parameters.workflow_id>> "
-  #           aws cloudformation delete-stack --stack-name udapeople-backend-prod<<parameters.workflow_id>>
-  #           aws s3 rm s3://udapeople-wajackoyah23<<parameters.workflow_id>> --recursive
-  #           aws cloudformation delete-stack --stack-name udapeople-frontend-prod<<parameters.workflow_id>>
+  destroy-environment:
+    description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
+    parameters:
+      workflow_id:
+        type: string
+    steps:
+      - run:
+          name: Destroy environments
+          when: on_fail
+          command: |
+            echo "Destroying environment: <<parameters.workflow_id>> "
+            aws cloudformation delete-stack --stack-name udapeople-backend-<<parameters.workflow_id>>
+            aws s3 rm s3://udapeople-<<parameters.workflow_id>> --recursive
+            aws cloudformation delete-stack --stack-name udapeople-frontend-<<parameters.workflow_id>>
 
   revert-migrations:
     description: Revert the last migration if successfully run in the current workflow.
@@ -141,6 +141,8 @@ jobs:
               cd frontend
               npm install
               npm audit fix --audit-level=critical --force
+              npm audit fix --force
+              npm audit --audit-level=critical
                         
 
   scan-backend:
@@ -158,16 +160,30 @@ jobs:
               cd backend
               npm install
               npm audit fix --audit-level=critical --force
-              
+              npm audit fix --force
+              npm audit --audit-level=critical
 
-  deploy-frontend-infrastructure:
+  deploy-infrastructure:
     docker:
       # Docker image here that supports AWS CLI
       - image: amazon/aws-cli
     steps:
       # Checkout code from git
-      - checkout 
-      - run: yum -y install tar gzip           
+      - checkout
+      - run:
+         name: Install tar & gzip
+         command: |
+          yum -y install tar gzip
+
+      - run:
+          name: Ensure back-end infrastructure exists
+          command: |
+            aws cloudformation deploy \
+              --template-file .circleci/files/backend.yml \
+              --stack-name backend1-"${CIRCLE_WORKFLOW_ID:0:7}" \
+              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  
+              --tags project=udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}
+     
       - run:
           name: Ensure front-end infrastructure exist
           command: |
@@ -176,25 +192,7 @@ jobs:
               --tags project=udapeoplefrontend-ronz \
               --stack-name frontend-"${CIRCLE_WORKFLOW_ID}" \
               --parameter-overrides ID="${CIRCLE_WORKFLOW_ID}" 
-
-
-  deploy-backend-infrastructure:
-    docker:
-      # Docker image here that supports AWS CLI
-      - image: amazon/aws-cli
-    steps:
-      # Checkout code from git
-      - checkout
-      - run: yum -y install tar gzip
-      - run:
-          name: Ensure back-end infrastructure exists
-          command: |
-            aws cloudformation deploy \
-              --template-file .circleci/files/backend.yml \
-              --stack-name backend-"${CIRCLE_WORKFLOW_ID}" \
-              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID}"  
-
- 
+              --tags project=udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7} 
 
       - run:
           name: Add back-end ip to ansible inventory
@@ -214,8 +212,8 @@ jobs:
             - output.txt
 
       # Here's where you will add some code to rollback on failure  
-      # - destroy-environment:
-      #     workflow_id: "${CIRCLE_WORKFLOW_ID}"    
+      - destroy-environment:
+          workflow_id: "${CIRCLE_WORKFLOW_ID}"    
 
 #   configure-infrastructure:
 #     docker:
@@ -364,12 +362,7 @@ workflows:
           requires: [build-frontend]
       - notify:
           context: slack-secrets
-      - deploy-frontend-infrastructure:
-          requires: [test-frontend, test-backend, scan-frontend, scan-backend]
-          filters:
-            branches:
-              only: [master]
-      - deploy-backend-infrastructure:
+      - deploy-nfrastructure:
           requires: [test-frontend, test-backend, scan-frontend, scan-backend]
           filters:
             branches:
