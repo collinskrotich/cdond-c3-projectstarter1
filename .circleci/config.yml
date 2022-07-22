@@ -318,13 +318,16 @@ jobs:
             - "c1:a8:b1:8b:50:da:7c:52:52:36:c4:59:40:53:e7:fb"
       - attach_workspace:
           at: ~/
-      - install-nodejs
+      # - install-nodejs
       - run:
           name: Install dependencies
           command: |
             apk add --update ansible rsync 
             apk add curl
             pip3 install awscli
+            curl -sL https://deb.nodesource.com/setup_13.x | sudo -E bash -
+            sudo apt-get install -y nodejs
+
             npm install
 
       - run:
@@ -375,8 +378,8 @@ jobs:
             - "c1:a8:b1:8b:50:da:7c:52:52:36:c4:59:40:53:e7:fb"
       - attach_workspace:
           at: ~/
-      - install-nodejs
-      
+      # - install-nodejs
+
 #Installing dependiencies
       - run:
           name: Install dependencies
@@ -384,6 +387,9 @@ jobs:
             apk add --update ansible rsync 
             apk add curl
             pip3 install awscli
+            curl -sL https://deb.nodesource.com/setup_13.x | sudo -E bash -
+            sudo apt-get install -y nodejs
+
             npm install
 
       # - run:
