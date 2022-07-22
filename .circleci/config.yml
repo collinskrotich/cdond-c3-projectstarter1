@@ -11,10 +11,9 @@ commands:
       - run:
           name: "install aws cli"
           command: |
-            curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip"
-            unzip awscli-bundle.zip
-            sudo ./aws/install
-
+            pip3 install awscli 
+          
+          
   install-nodejs:
     description: "install nodejs"
     steps:
@@ -342,7 +341,6 @@ jobs:
              npm i
              npm run build
              ls -l
-             tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
              aws s3 cp ./dist "s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7}" --recursive
 
        # Here's where you will add some code to rollback on failure
@@ -380,7 +378,7 @@ jobs:
             cd ..
 
             # Zip the directory
-            tar -C backend -czvf artifact.tar.gz .
+            # tar -C backend -czvf artifact.tar.gz .
             cd .circleci/ansible
 
             echo "Contents  of the inventory.txt file is -------"
