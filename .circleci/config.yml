@@ -338,12 +338,12 @@ jobs:
             echo API_URL="http://${BACKEND_IP}:3030" >> frontend/.env
             cat frontend/.env
 
-      - run:
-          name: Install tar gzip
-          command: |
-            sudo apt update -y
-            sudo apt install -y yum-utils
-            yum -y install tar gzip
+      # - run:
+      #     name: Install tar gzip
+      #     command: |
+      #       sudo apt update -y
+      #       sudo apt install -y yum-utils
+      #       yum -y install tar gzip
 
       - run:
           name: Deploy frontend objects
@@ -383,12 +383,12 @@ jobs:
             apk add curl
             pip3 install awscli
 
-      - run:
-          name: Install tar gzip
-          command: |
-            sudo apt update -y
-            sudo apt install -y yum-utils
-            yum -y install tar gzip
+      # - run:
+      #     name: Install tar gzip
+      #     command: |
+      #       sudo apt update -y
+      #       sudo apt install -y yum-utils
+      #       yum -y install tar gzip
 
       - run:
           name: Deploy backend
