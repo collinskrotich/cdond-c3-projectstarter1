@@ -230,13 +230,20 @@ jobs:
       - run:
           name: Add back-end ip to ansible inventory
           command: |
-            BACKEND_AWS_PUBLIC_IP=$(aws ec2 describe-instances \
-              --filters "Name=tag:Name,Values=backend-prod${CIRCLE_WORKFLOW_ID}" \
-              --query 'Reservations[*].Instances[*].PublicIpAddress' \
-              --output text)
-            echo "http://$BACKEND_AWS_PUBLIC_IP:3030" >> ~/output.txt
-            echo "[all]" >> .circleci/ansible/inventory.txt
-            echo "$BACKEND_AWS_PUBLIC_IP" >> .circleci/ansible/inventory.txt
+            cd .circleci/ansible
+            cat inventory.txt
+            aws ec2 describe-instances 
+            --query 'Reservations[*].Instances[*].PublicIpAddress' \
+            --output text --filter Name=tag:Name,Values=udapeople-backend-"${CIRCLE_WORKFLOW_ID:0:7}" >> inventory.txt
+            cat inventory.txt
+
+            # BACKEND_AWS_PUBLIC_IP=$(aws ec2 describe-instances \
+            #   --filters "Name=tag:Name,Values=backend-prod${CIRCLE_WORKFLOW_ID}" \
+            #   --query 'Reservations[*].Instances[*].PublicIpAddress' \
+            #   --output text)
+            # echo "http://$BACKEND_AWS_PUBLIC_IP:3030" >> ~/output.txt
+            # echo "[all]" >> .circleci/ansible/inventory.txt
+            # echo "$BACKEND_AWS_PUBLIC_IP" >> .circleci/ansible/inventory.txt
          
       - persist_to_workspace:
           root: ~/
@@ -262,18 +269,9 @@ jobs:
       # attach workspace
       - attach_workspace:
           at: ~/
-      
-      # Install ansible
+      # Run ansible playbook
       - install-ansible
 
-      # - run:
-      #     name: Install dependencies
-      #     command: |
-      #        apk add curl
-      #        apk add --upgrade bash
-      #        apk add --update ansible
-      #        apk add openssh-client
-      #        pip3 install awscli
       - run:
           name: Configure server
           command: |
@@ -329,23 +327,12 @@ jobs:
       - install-awscli
       - install-ansible
 
-      # - run:
-      #     name: Install dependencies
-      #     command: |
-      #       apk add --update ansible rsync 
-      #       apk add curl
-      #       pip3 install awscli
-      #       apt update
-      #       apt-get install -y nodejs
-
-      #       npm install
-
       - run:
           name: Get backend url
           command: |
             export BACKEND_IP=$(aws ec2 describe-instances \ 
-              --filters "Name=tag:Name,Values=backend-prod${CIRCLE_WORKFLOW_ID:0:7}" \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
+              --filters "Name=tag:Name,Values=backend-prod${CIRCLE_WORKFLOW_ID:0:7}" \
               --output text)
             export API_URL="http://${BACKEND_IP}:3030"
             echo "API_URL = ${API_URL}"
@@ -392,24 +379,6 @@ jobs:
       - install-nodejs
       - install-ansible
       - install-awscli
-
-# #Installing dependiencies
-#       - run:
-#           name: Install dependencies
-#           command: |
-#             apk add --update ansible rsync 
-#             apk add curl
-#             pip3 install awscli
-#             apt-get install -y nodejs
-
-#             npm install
-
-      # - run:
-      #     name: Install tar gzip
-      #     command: |
-      #       sudo apt update -y
-      #       sudo apt install -y yum-utils
-      #       yum -y install tar gzip
 
       - run:
           name: Deploy backend
