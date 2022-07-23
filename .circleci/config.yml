@@ -282,7 +282,7 @@ jobs:
   run-migrations:
     docker:
       # Docker image here that supports NodeJS
-      - image: circleci/node:13.8.0
+      - image: sleavely/node-awscli:14.x
     steps:
       # Checkout code from git
       - checkout
@@ -291,6 +291,7 @@ jobs:
           command: |
             cd backend
             npm install
+            npm run build
             npm run migrations > migrations_dump.txt
 
       - run:
