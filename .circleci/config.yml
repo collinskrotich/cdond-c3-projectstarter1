@@ -420,10 +420,11 @@ jobs:
             cd ..
 
             # Zip the directory
-            cd .circleci/ansible
-            mkdir files
-            cd files
             tar -C ../../../backend -czvf artifact.tar.gz .
+            cd .circleci/ansible
+            # mkdir files
+            # cd files
+            
             
 
             echo "Contents  of the inventory.txt file is -------"
