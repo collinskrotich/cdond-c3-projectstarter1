@@ -380,7 +380,7 @@ jobs:
       - attach_workspace:
           at: ~/
       # - install-nodejs
-      - injstall-ansible
+      - install-ansible
 
 #Installing dependiencies
       - run:
