@@ -326,7 +326,7 @@ jobs:
             apk add curl
             pip3 install awscli
             curl -sL https://deb.nodesource.com/setup_13.x | sudo -E bash -
-            sudo apt-get install -y nodejs
+            apt-get install -y nodejs
 
             npm install
 
@@ -388,7 +388,7 @@ jobs:
             apk add curl
             pip3 install awscli
             curl -sL https://deb.nodesource.com/setup_13.x | sudo -E bash -
-            sudo apt-get install -y nodejs
+            apt-get install -y nodejs
 
             npm install
 
