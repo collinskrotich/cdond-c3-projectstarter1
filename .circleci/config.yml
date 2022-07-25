@@ -237,12 +237,12 @@ jobs:
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
               --output text)
             # echo "http://$BACKEND_AWS_PUBLIC_IP:3030" > ~/output.txt
-            echo "$BACKEND_AWS_PUBLIC_IP" > ~/output.txt
+            echo "$BACKEND_AWS_PUBLIC_IP" 
             echo "$BACKEND_AWS_PUBLIC_IP" >> .circleci/ansible/inventory.txt
             
             cd .circleci/ansible
             cat inventory.txt
-            cat output.txt
+           
      
             # aws ec2 describe-instances 
             # --query 'Reservations[*].Instances[*].PublicIpAddress' \
