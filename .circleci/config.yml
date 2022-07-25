@@ -232,13 +232,14 @@ jobs:
           name: Add back-end ip to ansible inventory
           command: |
             export TERM=msys
-            # BACKEND_AWS_PUBLIC_IP=$(aws ec2 describe-instances \
-            #   --filters "Name=tag:Name,Values=udapeople-backend-${CIRCLE_WORKFLOW_ID}" \
-            #   --query 'Reservations[*].Instances[*].PublicIpAddress' \
-            #   --output text)
-            # # echo "http://$BACKEND_AWS_PUBLIC_IP:3030" > ~/output.txt
-            # echo "$BACKEND_AWS_PUBLIC_IP" 
+            BACKEND_AWS_PUBLIC_IP=$(aws ec2 describe-instances \
+              --filters "Name=tag:Name,Values=udapeople-backend-${CIRCLE_WORKFLOW_ID}" \
+              --query 'Reservations[*].Instances[*].PublicIpAddress' \
+              --output text)
+            echo "http://$BACKEND_AWS_PUBLIC_IP:3030" > .circleci/ansible/output.txt
+            echo "$BACKEND_AWS_PUBLIC_IP" 
             # echo "$BACKEND_AWS_PUBLIC_IP" >> .circleci/ansible/inventory.txt
+            cat output.txt
             
             cd .circleci/ansible
             cat inventory.txt
