@@ -232,21 +232,23 @@ jobs:
           name: Add back-end ip to ansible inventory
           command: |
             export TERM=msys
-            # BACKEND_AWS_PUBLIC_IP=$(aws ec2 describe-instances \
-            #   --filters "Name=tag:Name,Values=udapeople-backend-${CIRCLE_WORKFLOW_ID}" \
-            #   --query 'Reservations[*].Instances[*].PublicIpAddress' \
-            #   --output text)
-            # # echo "http://$BACKEND_AWS_PUBLIC_IP:3030" > ~/output.txt
-            # echo "$BACKEND_AWS_PUBLIC_IP" >> .circleci/ansible/inventory.txt
+            BACKEND_AWS_PUBLIC_IP=$(aws ec2 describe-instances \
+              --filters "Name=tag:Name,Values=udapeople-backend-${CIRCLE_WORKFLOW_ID}" \
+              --query 'Reservations[*].Instances[*].PublicIpAddress' \
+              --output text)
+            # echo "http://$BACKEND_AWS_PUBLIC_IP:3030" > ~/output.txt
+            echo "$BACKEND_AWS_PUBLIC_IP" > ~/output.txt
+            echo "$BACKEND_AWS_PUBLIC_IP" >> .circleci/ansible/inventory.txt
             
             cd .circleci/ansible
             cat inventory.txt
+            cat output.txt
      
-            aws ec2 describe-instances 
-            --query 'Reservations[*].Instances[*].PublicIpAddress' \
-            # --filter Name=tag:Name,Values=udapeople-backend-"${CIRCLE_WORKFLOW_ID:0:7}" \
-            --output text --filter Name=tag:Name,Values=udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7} >> inventory.txt
-            cat inventory.txt
+            # aws ec2 describe-instances 
+            # --query 'Reservations[*].Instances[*].PublicIpAddress' \
+            # # --filter Name=tag:Name,Values=udapeople-backend-"${CIRCLE_WORKFLOW_ID:0:7}" \
+            # --output text --filter Name=tag:Name,Values=udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7} >> inventory.txt
+            # cat inventory.txt
          
       - persist_to_workspace:
           root: ~/
