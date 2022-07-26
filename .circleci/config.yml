@@ -423,7 +423,7 @@ jobs:
             then
               exit 0
             else
-              exit 1
+              return 1
             fi
       - run:
           name: Frontend smoke test.
@@ -436,7 +436,7 @@ jobs:
                   # Change this to 0 after the job fails
                   return 1
               else
-                  return 0
+                  return 1
               fi
               fi
       # Here's where you will add some code to rollback on failure 
@@ -445,20 +445,35 @@ jobs:
       - revert-migrations:
             workflow_id: ${CIRCLE_WORKFLOW_ID:0:7} 
             
-#   cloudfront-update:
-#     docker:
-#       # Docker image here that supports AWS CLI
-#     steps:
-#       # Checkout code from git
-#       - run:
-#           name: Install dependencies
-#           command: |
-#             # your code here
-#       - run:
-#           name: Update cloudfront distribution
-#           command: |
-#             # your code here
-#       # Here's where you will add some code to rollback on failure  
+  cloudfront-update:
+    docker:
+      # Docker image here that supports AWS CLI
+      - image: amazon/aws-cli:latest
+    steps:
+      # Checkout code from git
+      - checkout      
+      - run:
+          name: Install dependencies/Save old workflow ID to kvdb.io
+          command: |
+            export OLD_WORKFLOW_ID=${aws cloudformation \
+            list-exports --query "Exports[?Name==\`WorkflowID\`].Value" \
+            --no-paginate --output.txt)
+            echo "Old workflow ID is ${OLD_WORKFLOW_ID}"
+            curl https://kvdb.io/$Amgpg7uReV59LAFJfgg44h/old_workflow_id  -d "${OLD_WORKFLOW_ID}"
+             
+      - run:
+          name: Update cloudfront distribution
+          command: |
+            # your code here
+            aws cloudformation deploy \
+            --template-file .circleci/files/cloudfront.yml \
+            --parameter-overrides WorkflowID="${CIRCLE_WORKFLOW_ID:0:7}" \
+            --stack-name InitialStack
+      # Here's where you will add some code to rollback on failure 
+      - destroy-environment:
+           workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
+      - revert-migrations:
+            workflow_id: ${CIRCLE_WORKFLOW_ID:0:7} 
 
 # cleanup:
 #     docker:
@@ -510,7 +525,7 @@ workflows:
           requires: [run-migrations]
       - smoke-test:
           requires: [deploy-backend, deploy-frontend]
-      # - cloudfront-update:
-      #     requires: [smoke-test]
+      - cloudfront-update:
+          requires: [smoke-test]
       # - cleanup:
       #     requires: [cloudfront-update]
