@@ -267,7 +267,7 @@ jobs:
           at: ~/
       # Run ansible playbook
       - install-ansible
-      - install-aws-cli
+      - install-awscli
 
       - run:
           name: Configure server
