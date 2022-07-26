@@ -24,11 +24,22 @@
     global: yes
     production: yes
 
-- name: "install nodejs-13.x"
+# - name: "install nodejs-13.x"
+#   become: true
+#   shell: |
+#     curl -sL https://deb.nodesource.com/setup_13.x | sudo -E bash -
+#     sudo apt-get install -y nodejs
+
+- name: "Add Node.js from source"
   become: true
   shell: |
     curl -sL https://deb.nodesource.com/setup_13.x | sudo -E bash -
-    sudo apt-get install -y nodejs
+- name: "Install Node.js 13"
+  become: true
+  apt:
+    name: ["nodejs"]
+    state: latest
+    update_cache: yes
 
 - name: "install pm2"
   become: true
@@ -38,8 +49,8 @@
     production: yes
     state: present
 
-# - name: "move env variables to /etc/profile.d/"
-#   become: true
-#   copy:
-#     src: myenv.sh
-#     dest: "/etc/profile.d/"
+- name: "move env variables to /etc/profile.d/"
+  become: true
+  copy:
+    src: myenv.sh
+    dest: "/etc/profile.d/"
