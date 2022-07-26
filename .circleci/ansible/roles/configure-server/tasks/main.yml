@@ -1,7 +1,7 @@
 ---
 
 - name: "update apt"
-  become: yes
+  become: true
   apt:
     update_cache: yes
 
@@ -24,11 +24,11 @@
     global: yes
     production: yes
 
-# - name: "install nodejs-13.x"
-#   become: true
-#   shell: |
-#     curl -sL https://deb.nodesource.com/setup_13.x | sudo -E bash -
-#     sudo apt-get install -y nodejs
+- name: "install nodejs-13.x"
+  become: true
+  shell: |
+    curl -sL https://deb.nodesource.com/setup_13.x | sudo -E bash -
+    sudo apt-get install -y nodejs
 
 - name: "Add Node.js from source"
   become: true
