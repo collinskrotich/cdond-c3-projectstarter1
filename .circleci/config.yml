@@ -288,7 +288,7 @@ jobs:
             export ANSIBLE_HOST_KEY_CHECKING=False
             ansible-playbook -i inventory.txt configure-server.yml      
             
-          # Here's where you will add some code to rollback on failure 
+          # Here's where you will add some code to rollback on failure na ikubali
       - destroy-environment:
          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}     
 
